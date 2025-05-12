@@ -9,6 +9,11 @@ using System.Security.Claims;
 
 namespace Core.Services;
 
+// Handles user authentication and registration
+// @see https://learn.microsoft.com/en-us/ef/core/dbcontext-configuration/
+// @see https://learn.microsoft.com/en-us/aspnet/core/security/authentication/jwt
+// @see https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.rfc2898derivebytes
+
 public class AuthService
 {
     private readonly AppDbContext _db;
@@ -20,6 +25,7 @@ public class AuthService
         _config = config;
     }
 
+    // Registers a new user with hashed password if username doesn't exist
     public async Task<User?> RegisterAsync(string username, string password, string role)
     {
         if (await _db.Users.AnyAsync(u => u.Username == username))
@@ -32,6 +38,7 @@ public class AuthService
         return user;
     }
 
+    // Authenticates a user and returns JWT token if valid
     public async Task<string?> LoginAsync(string username, string password)
     {
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Username == username);
@@ -41,6 +48,8 @@ public class AuthService
         return GenerateJwtToken(user);
     }
 
+    // Builds a JWT token using claims and secret key
+    // @see https://learn.microsoft.com/en-us/dotnet/api/system.identitymodel.tokens.jwt.jwtsecuritytoken
     private string GenerateJwtToken(User user)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
@@ -63,6 +72,8 @@ public class AuthService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
+    // Hashes a password using PBKDF2 with SHA256
+    // @see https://learn.microsoft.com/en-us/dotnet/api/system.security.cryptography.rfc2898derivebytes
     private string HashPassword(string password)
     {
         using var hasher = new Rfc2898DeriveBytes(password, 16, 10000, HashAlgorithmName.SHA256);
@@ -71,6 +82,7 @@ public class AuthService
         return Convert.ToBase64String(salt.Concat(hash).ToArray());
     }
 
+    // Verifies a plain password against stored hash
     private bool VerifyPassword(string password, string stored)
     {
         var bytes = Convert.FromBase64String(stored);
@@ -82,11 +94,13 @@ public class AuthService
         return testHash.SequenceEqual(hash);
     }
 
+    // Looks up user by username
     public async Task<User?> GetUserByUsernameAsync(string username)
     {
         return await _db.Users.FirstOrDefaultAsync(u => u.Username == username);
     }
 
+    // Static version of password hasher used during seeding
     public static string HashPasswordStatic(string password)
     {
         using var hasher = new Rfc2898DeriveBytes(password, 16, 10000, HashAlgorithmName.SHA256);
@@ -94,5 +108,4 @@ public class AuthService
         var hash = hasher.GetBytes(32);
         return Convert.ToBase64String(salt.Concat(hash).ToArray());
     }
-
 }

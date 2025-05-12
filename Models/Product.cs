@@ -2,6 +2,7 @@
 
 public class Product
 {
+    // product model
     public int Id { get; set; }
     public int FarmerId { get; set; }
     public string Name { get; set; } = string.Empty;

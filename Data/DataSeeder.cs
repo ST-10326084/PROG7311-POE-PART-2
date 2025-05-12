@@ -5,6 +5,11 @@ using Core.Services;
 
 namespace Core
 {
+    /*
+     *  Seed or plant data into the database to ensure there is testing data to work on
+     * 
+     */
+
     public static class DataSeeder
     {
         public static void Seed(AppDbContext context)

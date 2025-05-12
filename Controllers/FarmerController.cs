@@ -5,6 +5,10 @@ using Core.Models;
 
 namespace Web.Controllers
 {
+    // Handles product management and profile creation for logged-in farmers
+    // @see https://learn.microsoft.com/en-us/ef/core/querying/related-data
+    // @see https://learn.microsoft.com/en-us/aspnet/core/mvc/controllers/actions
+
     public class FarmerController : Controller
     {
         private readonly AppDbContext _db;
@@ -14,7 +18,7 @@ namespace Web.Controllers
             _db = db;
         }
 
-        // Show products that belong to the logged-in farmer
+        // Shows all products belonging to the logged-in farmer
         public async Task<IActionResult> Index()
         {
             var username = HttpContext.Session.GetString("Username");
@@ -22,8 +26,8 @@ namespace Web.Controllers
                 return RedirectToAction("Login", "Auth");
 
             var farmer = await _db.Farmers
-                .Include(f => f.Products)
-                .FirstOrDefaultAsync(f => f.Name == username);
+                                  .Include(f => f.Products)
+                                  .FirstOrDefaultAsync(f => f.Name == username);
 
             if (farmer == null)
                 return RedirectToAction("CreateProfile");
@@ -31,7 +35,7 @@ namespace Web.Controllers
             return View(farmer.Products.ToList());
         }
 
-        // GET: Show Add Product Form
+        // GET: Shows the form for adding a new product
         [HttpGet]
         public IActionResult AddProduct()
         {
@@ -41,7 +45,7 @@ namespace Web.Controllers
             return View();
         }
 
-        // POST: Handle Add Product
+        // POST: Saves a new product to the logged-in farmer's profile
         [HttpPost]
         public async Task<IActionResult> AddProduct(Product model)
         {
@@ -60,13 +64,14 @@ namespace Web.Controllers
             return RedirectToAction("Index");
         }
 
-        // If Farmer doesn't exist, show create profile form
+        // GET: Show form to create a farmer profile if one doesn't exist
         [HttpGet]
         public IActionResult CreateProfile()
         {
             return View();
         }
 
+        // POST: Create the farmer profile using session's username
         [HttpPost]
         public async Task<IActionResult> CreateProfile(string location)
         {
