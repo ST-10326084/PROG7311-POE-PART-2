@@ -1,0 +1,26 @@
+﻿@model List<Core.Models.Farmer>
+@{
+    ViewData["Title"] = "All Farmers";
+}
+
+<h2>All Farmers</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Product Count</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var f in Model)
+        {
+            <tr>
+                <td>@f.Name</td>
+                <td>@f.Location</td>
+                <td>@f.Products.Count</td>
+            </tr>
+        }
+    </tbody>
+</table>

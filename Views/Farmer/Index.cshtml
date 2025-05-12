@@ -1,0 +1,29 @@
+﻿@model List<Core.Models.Product>
+@{
+    ViewData["Title"] = "My Products";
+}
+<div id="my-products-page">
+    <h2>My Products</h2>
+
+    <a href="/Farmer/AddProduct" class="btn btn-primary mb-3">Add New Product</a>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Production Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td>@p.Name</td>
+                    <td>@p.Category</td>
+                    <td>@p.ProductionDate.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

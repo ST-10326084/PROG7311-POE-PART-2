@@ -1,0 +1,26 @@
+﻿@model object  // Update this to the correct model if needed (e.g., List<Farmer>
+    
+@{
+    ViewData["Title"] = "Employee Dashboard";
+}
+
+    <div id="employee-dashboard-page">
+        <h2>Employee Dashboard</h2>
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Dashboard Options</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <a href="/Employee/Farmers" class="nav-link">View All Farmers</a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="/Employee/AddFarmer" class="nav-link">Add New Farmer</a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="/Employee/Products" class="nav-link">View & Filter Products</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
